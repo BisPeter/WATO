@@ -3,10 +3,28 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp"
+        xmlns:local="clr-namespace:WpfApp.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="100000" Width="100000">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*">
+                
+            </RowDefinition>
+            <RowDefinition Height="100*">
+                
+            </RowDefinition>
+        </Grid.RowDefinitions>
+        <Button Grid.Row="0" Click="ButtonClick" Content="fff">
+            
+        </Button>
+        <Grid Grid.Row="1">
+            <Canvas Height="100000" Width="100000" Name="myCanvas">
+                <TextBlock Canvas.Left="15" Canvas.Top="15" TextWrapping="WrapWithOverflow" Text="TESTTEST">
+
+                </TextBlock>
+            </Canvas>
+        </Grid>
 
     </Grid>
 </Window>
