@@ -8,22 +8,38 @@
         Title="MainWindow" Height="100000" Width="100000">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*">
+            <RowDefinition Height="2*">
                 
             </RowDefinition>
             <RowDefinition Height="100*">
                 
             </RowDefinition>
         </Grid.RowDefinitions>
-        <Button Grid.Row="0" Click="ButtonClick" Content="fff">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*">
+                
+            </ColumnDefinition>
+            <ColumnDefinition Width="1*">
+                
+            </ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Button Grid.Row="0" Click="ButtonClick" Content="BitmapImage - Bitmap">
             
         </Button>
-        <Grid Grid.Row="1">
-            <Canvas Height="100000" Width="100000" Name="myCanvas">
+        <Button Grid.Row="0" Grid.Column="1" Click="ButtonClick2" Content="Pixelformat">
+
+        </Button>
+        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+            <Image Width="10000" Height="100000" Name="myImage" >
+                <Image.Source>
+                    <BitmapImage UriSource="apple.jpg" />
+                </Image.Source>
+            </Image>
+            <!--<Canvas Height="100000" Width="100000" Name="myCanvas">
                 <TextBlock Canvas.Left="15" Canvas.Top="15" TextWrapping="WrapWithOverflow" Text="TESTTEST">
 
                 </TextBlock>
-            </Canvas>
+            </Canvas>-->
         </Grid>
 
     </Grid>
