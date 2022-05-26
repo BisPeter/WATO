@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="100000" Width="100000">
+        Title="MainWindow" Height="1000" Width="1000">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*">
@@ -30,7 +30,7 @@
 
         </Button>
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
-            <Image Width="10000" Height="100000" Name="myImage" >
+            <Image Width="800" Height="800" Name="myImage" >
                 <Image.Source>
                     <BitmapImage UriSource="apple.jpg" />
                 </Image.Source>

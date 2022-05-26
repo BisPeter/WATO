@@ -30,7 +30,7 @@ namespace WpfApp
         /// </summary>
         private readonly WpfClientHandlerVM mainVM;
 
-        
+
         public MainWindow()
         {
 
@@ -39,16 +39,16 @@ namespace WpfApp
             this.mainVM = new WpfClientHandlerVM();
             this.DataContext = this.mainVM;
 
-           /* Rectangle r1 = new Rectangle();
-            r1.Width = 100;
-            r1.Height = 100;
-            Canvas.SetLeft(r1, 10);
-            Canvas.SetTop(r1, 10);
-            r1.Stroke = new SolidColorBrush(Color.FromRgb(255, 255, 255/*0, 0, 0*//*));
-            r1.StrokeThickness = 1;
-            r1.Fill = new ImageBrush(new BitmapImage(new Uri(@"apple.jpg", UriKind.Relative)));
+            /* Rectangle r1 = new Rectangle();
+             r1.Width = 100;
+             r1.Height = 100;
+             Canvas.SetLeft(r1, 10);
+             Canvas.SetTop(r1, 10);
+             r1.Stroke = new SolidColorBrush(Color.FromRgb(255, 255, 255/*0, 0, 0*//*));
+             r1.StrokeThickness = 1;
+             r1.Fill = new ImageBrush(new BitmapImage(new Uri(@"apple.jpg", UriKind.Relative)));
 
-            myCanvas.Children.Add(r1);*/
+             myCanvas.Children.Add(r1);*/
         }
 
         private Bitmap Bi { get; set; } = new Bitmap(10000, 10000);
@@ -65,7 +65,9 @@ namespace WpfApp
             var random = new Random();
 
             // Create source.
-            
+
+            long t1 = DateTime.Now.Ticks;
+
             for (int i = 0; i < 10000; i++)
             {
                 for (int j = 0; j < 10000; j++)
@@ -75,7 +77,23 @@ namespace WpfApp
                     else
                         Bi.SetPixel(i, j, System.Drawing.Color.Green);
                 }
-            }            
+            }
+
+            long f1 = DateTime.Now.Ticks -t1;
+
+            long t2 = DateTime.Now.Ticks;
+            Parallel.For(0, 10000, i =>
+            {
+                Parallel.For(0, 10000, j =>
+                {
+                    if (random.NextDouble() > 0.5)
+                        Bi.SetPixel(i, j, System.Drawing.Color.AntiqueWhite);
+                    else
+                        Bi.SetPixel(i, j, System.Drawing.Color.Green);
+                });
+            });
+
+            long f2 = DateTime.Now.Ticks - t2;
 
             MemoryStream ms = new MemoryStream();
             ((System.Drawing.Bitmap)Bi).Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
@@ -101,35 +119,35 @@ namespace WpfApp
                     Canvas.SetLeft(r1, i);
                     Canvas.SetTop(r1, j);
                     //r1.Stroke = new SolidColorBrush(Color.FromRgb(255, 255, 255/*0, 0, 0*///));
-                    //r1.StrokeThickness = 1;
-                    //r1.Fill = new ImageBrush(new BitmapImage(new Uri(@"apple.jpg", UriKind.Relative)));
-                    /*r1.Fill = new SolidColorBrush(Color.FromRgb(20, 255, 100/*0, 0, 0*//*));
-                    myCanvas.Children.Add(r1);
-                }                
-            }
+                                                                                            //r1.StrokeThickness = 1;
+                                                                                            //r1.Fill = new ImageBrush(new BitmapImage(new Uri(@"apple.jpg", UriKind.Relative)));
+            /*r1.Fill = new SolidColorBrush(Color.FromRgb(20, 255, 100/*0, 0, 0*//*));
+            myCanvas.Children.Add(r1);
+        }                
+    }
 
 
-            ObjectCanvasRenderer renderer = new ObjectCanvasRenderer(
-                myCanvas,
-                new Command(obj =>
-                {
-                /*RenderObjectsArgs args = obj as RenderObjectsArgs;
-                if (args != null)
-                {
-                    Dispatcher.Invoke(() => this.drawAction.Invoke(args));
-                }*/
-               /* }),
-                new Command(obj =>
-                {
-                    Rectangle r = obj as Rectangle;
-                    if (r != null)
-                    {
-                        Dispatcher.Invoke(new Action(() => myCanvas.Children.Remove(r)));
-                    }
-                }));*/
+    ObjectCanvasRenderer renderer = new ObjectCanvasRenderer(
+        myCanvas,
+        new Command(obj =>
+        {
+        /*RenderObjectsArgs args = obj as RenderObjectsArgs;
+        if (args != null)
+        {
+            Dispatcher.Invoke(() => this.drawAction.Invoke(args));
+        }*/
+            /* }),
+             new Command(obj =>
+             {
+                 Rectangle r = obj as Rectangle;
+                 if (r != null)
+                 {
+                     Dispatcher.Invoke(new Action(() => myCanvas.Children.Remove(r)));
+                 }
+             }));*/
         }
 
-        public byte[] RawImage { get; set; } = new byte[10000 * 10000]; 
+        public byte[] RawImage { get; set; } = new byte[10000 * 10000];
 
         /// <summary>
         /// This method will create a renderer, and connect the client to a server.
@@ -140,11 +158,11 @@ namespace WpfApp
 
         {
             PixelFormat pf = PixelFormats.Bgra32;
-            
+
             int width = 10000;
             int height = width;
             //int stride = (width * pf.BitsPerPixel + 7) / 8;
-            int stride =width;
+            int stride = width;
             byte[] pixels = new byte[height * stride];
 
             // Try creating a new image with a custom palette.
@@ -174,5 +192,5 @@ namespace WpfApp
         }
     }
 
-    
+
 }

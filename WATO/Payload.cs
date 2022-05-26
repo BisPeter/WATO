@@ -9,7 +9,6 @@ namespace WATO
     public class Payload
     {
         public bool[,] DataChunk { get; set; }
-        public int PosX { get; set; }
-        public int PosY { get; set; }
+        public int RowNumber { get; set; }        
     }
 }

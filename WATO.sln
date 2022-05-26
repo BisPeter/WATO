@@ -5,7 +5,9 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WATO", "WATO\WATO.csproj", "{B1AA0259-E260-4DAA-9B47-E73462C63975}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp", "WpfApp\WpfApp.csproj", "{0A2EF379-451B-4204-9BA2-8CE5369B092D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfApp", "WpfApp\WpfApp.csproj", "{0A2EF379-451B-4204-9BA2-8CE5369B092D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatorConsoleProj", "WatorConsoleProj\WatorConsoleProj.csproj", "{D385350C-1E92-4A45-B48A-68D64F846A34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0A2EF379-451B-4204-9BA2-8CE5369B092D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A2EF379-451B-4204-9BA2-8CE5369B092D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A2EF379-451B-4204-9BA2-8CE5369B092D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D385350C-1E92-4A45-B48A-68D64F846A34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D385350C-1E92-4A45-B48A-68D64F846A34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D385350C-1E92-4A45-B48A-68D64F846A34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D385350C-1E92-4A45-B48A-68D64F846A34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
