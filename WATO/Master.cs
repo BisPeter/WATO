@@ -38,6 +38,7 @@ namespace WATO
         public void Start()
         {
             if (_running) { throw new InvalidOperationException(); }
+            _start = DateTime.Now.Ticks;
             _running = true;
             _thread = new Thread(Worker);
             _thread.Start();
@@ -80,8 +81,9 @@ namespace WATO
 
                     if (_bildcounter % 10 == 0)
                     {
-                        _tracer.TraceMessage("At [" + DateTime.Now.ToString("hh:mm:ss.fff")+ "] Timespan for 10 Rounds: " + TimeSpan.FromTicks(DateTime.Now.Ticks - _start).ToString() + "with " + _workerCount + " workers with " + _dataGrid.Count + " rows and " + _dataGrid.ElementAt(0).Count() + " columns");
-                        //Console.WriteLine(TimeSpan.FromTicks(DateTime.Now.Ticks - _start).ToString());
+                        _tracer.TraceMessage("At [" + DateTime.Now.ToString("hh:mm:ss.fff")+ "] Timespan for 10 Rounds: " + TimeSpan.FromTicks(DateTime.Now.Ticks - _start).ToString() + " with " + _workerCount + " workers with " + _dataGrid.Count + " rows and " + _dataGrid.ElementAt(0).Count() + " columns");
+                        //Console.WriteLine(TimeSpan.FromTicks(DateTime.Now.Ticks - _start).ToString()); // Console option
+                        _start = DateTime.Now.Ticks;
                     }
 
                     BitmapCreator.AddImageToList(_dataGrid);
@@ -109,7 +111,6 @@ namespace WATO
             while (_running)
             {
                 if (!_allWorkersFinished) { Thread.Sleep(5); continue; }
-                _start = DateTime.Now.Ticks;
                 List<Payload> tasks = SplitDataGrid();
                 DistributeWork(tasks);
                 _allWorkersFinished = false;
