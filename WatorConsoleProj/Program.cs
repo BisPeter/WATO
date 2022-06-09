@@ -28,10 +28,10 @@ namespace WatorConsoleProj
 
 
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 b.Add(new List<bool>());
-                for (int j = 0; j < 10; j++)
+                for (int j = 0; j < 10000; j++)
                 {
                     if (random.NextDouble() > 0.5)
                         b.ElementAt(i).Add(true);
@@ -39,7 +39,7 @@ namespace WatorConsoleProj
                         b.ElementAt(i).Add(false);
                 }
             }
-            Master m = new Master(10, 5, b);
+            Master m = new Master(10000, 8, b);
             m.Start();
         }
     }

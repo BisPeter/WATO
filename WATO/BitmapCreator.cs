@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Media.Imaging;
 
 namespace WATO
@@ -9,31 +10,42 @@ namespace WATO
     public static class BitmapCreator
     {
         private static List<Bitmap> _bitmaps = new List<Bitmap>();
-        private static List<bool[,]> _bools = new List<bool[,]>();
 
-        public static void CreateBimapImagefromPayloadBoolArrayPlease(bool[,] array)
+        private static List<IEnumerable<IEnumerable<bool>>> _bools = new List<IEnumerable<IEnumerable<bool>>>();
+
+        public static void CreateBimapImagefromPayloadBoolArrayPlease(IEnumerable<IEnumerable<bool>> dataGrid)
         {
-            Bitmap bi = new Bitmap(array.GetLength(0), array.GetLength(1));
+            var columnsNumber = dataGrid.Count();
+            var rowsNumber = dataGrid.ElementAt(0).Count();
 
-            for (int i = 0; i < array.GetLength(0); i++)
+            Bitmap bi = new Bitmap(columnsNumber, rowsNumber);
+
+            for (int i = 0; i < rowsNumber; i++) // row
             {
-                for (int j = 0; j < array.GetLength(1); j++)
+                for (int j = 0; j < columnsNumber; j++) // column
                 {
-                    if (array[i, j])
-                        bi.SetPixel(i, j, System.Drawing.Color.Red);
+                    if (dataGrid.ElementAt(i).ElementAt(j))
+                    {
+                        //   x=j=column, y=i=row  
+                        bi.SetPixel(j, i, System.Drawing.Color.Red);
+                    }
                     else
-                        bi.SetPixel(i, j, System.Drawing.Color.Green);
-
+                    {
+                        bi.SetPixel(j, i, System.Drawing.Color.Green);
+                    }
                 }
             }
 
             _bitmaps.Add(bi);                    
         }
 
-        internal static void AddImageToList(bool[,] resultPublishedImage)
+        internal static void AddImageToList(List<List<bool>> dataGrid)
         {
-            _bools.Add(resultPublishedImage);
-            if(_bools.Count % 50 == 0)
+            var deepCopyDataGrid = new List<List<bool>>(dataGrid.Select(d =>new List<bool>(d.Select(dd => dd))));
+
+            _bools.Add(deepCopyDataGrid);
+
+            if(_bools.Count % 10 == 0)
             {
                 _bools.ForEach(x => CreateBimapImagefromPayloadBoolArrayPlease(x));
                 ImageSaver.Saveimages(_bitmaps); 

@@ -61,9 +61,9 @@ namespace WATO
         {
             Payload payload2 = new Payload { RowNumber = payload.RowNumber };
             bool[,] calculatedDataChunk = new bool[payload.DataChunk.GetLength(0) - 2, payload.DataChunk.GetLength(1) - 2];
-            for (int i = 1; i < payload.DataChunk.GetLength(0) - 1; i++)
+            for (int i = 1; i < payload.DataChunk.GetLength(0) - 1; i++) // Go through rows
             {
-                for (int j = 1; j < payload.DataChunk.GetLength(1) - 1; j++)
+                for (int j = 1; j < payload.DataChunk.GetLength(1) - 1; j++) // Go through every value in 1 row (=columns)
                 {
                     int neighbourCount = 0;
 

@@ -191,6 +191,4 @@ namespace WpfApp
             myImage.Source = image;
         }
     }
-
-
 }
