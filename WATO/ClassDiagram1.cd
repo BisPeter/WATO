@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="WATO.Worker">
+    <Position X="9" Y="3.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAiAAAAAQAAABAAAgAAAAAAAAIAAAAAEACQA=</HashCode>
+      <FileName>Worker.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_payload" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WATO.Tracer">
+    <Position X="6" Y="1.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tracer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WATO.Payload">
+    <Position X="5.75" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Payload.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WATO.Master">
+    <Position X="0.5" Y="1.75" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>ACgEAAAAASAAgggCCAABACAQgAAACBAAIAgIAAEAAQA=</HashCode>
+      <FileName>Master.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_tracer" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WATO.ImageSaver">
+    <Position X="6.25" Y="8.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ImageSaver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WATO.BitmapCreator">
+    <Position X="0.5" Y="7.25" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAEAAAAAAAJAAAAAAAIAA=</HashCode>
+      <FileName>BitmapCreator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="WATO.Interfaces.IThread">
+    <Position X="9.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAACAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IThread.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

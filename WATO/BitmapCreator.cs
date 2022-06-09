@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace WATO
@@ -13,7 +14,9 @@ namespace WATO
 
         private static List<IEnumerable<IEnumerable<bool>>> _bools = new List<IEnumerable<IEnumerable<bool>>>();
 
-        public static void CreateBimapImagefromPayloadBoolArrayPlease(IEnumerable<IEnumerable<bool>> dataGrid)
+        public static int PicturesTillSave { get; set; } = 10;
+
+        public static void CreateBimapfromListOfLists(IEnumerable<IEnumerable<bool>> dataGrid)
         {
             var columnsNumber = dataGrid.Count();
             var rowsNumber = dataGrid.ElementAt(0).Count();
@@ -45,9 +48,9 @@ namespace WATO
 
             _bools.Add(deepCopyDataGrid);
 
-            if(_bools.Count % 10 == 0)
+            if(_bools.Count % PicturesTillSave == 0)
             {
-                _bools.ForEach(x => CreateBimapImagefromPayloadBoolArrayPlease(x));
+                Parallel.ForEach(_bools, x=> CreateBimapfromListOfLists(x));
                 ImageSaver.Saveimages(_bitmaps); 
                 _bitmaps.Clear();
             }

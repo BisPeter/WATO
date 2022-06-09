@@ -8,7 +8,7 @@ using WATO.Interfaces;
 
 namespace WATO
 {
-    public class Worker
+    public class Worker : IThread
     {
         private Payload _payload;
         public event EventHandler<Payload> FireOnWorkerIsDone;
@@ -35,16 +35,14 @@ namespace WATO
             }
         }
 
-        public bool AcceptPayload(Payload payload)
+        public void AcceptPayload(Payload payload)
         {
-            if (_working) { throw new Exception(); }// return false; }
+            if (_working) { throw new ArgumentException("[AcceptPayload]: cannot get payload when still working"); }
             _payload = payload;
             _working = true;
-
-            return true;
         }
 
-        void Work()
+        public void Work()
         {
             while (_running)
             {

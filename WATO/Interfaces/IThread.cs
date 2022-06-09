@@ -10,6 +10,6 @@ namespace WATO.Interfaces
     {
         void Stop();
         void Start();
-        void Worker();
+        void Work();
     }
 }

@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitmapCreator.cs" />
-    <Compile Include="Command.cs" />
     <Compile Include="ImageSaver.cs" />
     <Compile Include="Interfaces\IThread.cs" />
     <Compile Include="Master.cs" />
@@ -53,6 +52,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tracer.cs" />
     <Compile Include="Worker.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

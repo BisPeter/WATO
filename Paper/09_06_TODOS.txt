@@ -1,0 +1,7 @@
+Analyse, mit 1,2,4,8,16,32 Threads ausführen und in die doku
+Alles nochmal durchlesen
+Vorteile von version2?
+zum starten übergabe wie viele threads, wie viel pixel, welche pixel true, nach wie vielen bilder gespeichert 
+alle Klassen kommentieren 
+Analysiere den Aufwand für Kommunikation / Koordination zwischen den verschiedenen Processing Units
+irfanview zoomen in der slideshow?

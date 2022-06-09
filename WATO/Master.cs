@@ -13,7 +13,6 @@ namespace WATO
     {
         private List<Worker> _workers;
         private List<List<bool>> _dataGrid; // List of rows
-        private int _pixelCount;
         private int _workerCount;
         private int _finishedWorkersCount;
         private bool _running;
@@ -24,11 +23,10 @@ namespace WATO
         private long _start;
         private readonly Tracer _tracer;
 
-        public Master(int pixelCount, int workerCount, List<List<bool>> dataGrid)
+        public Master(int workerCount, List<List<bool>> dataGrid)
         {
             _locker = new object();
             _dataGrid = dataGrid;
-            _pixelCount = pixelCount;
             _workers = CreateWorkers(workerCount);
             _workerCount = workerCount;
             _tracer = new Tracer();
@@ -40,7 +38,7 @@ namespace WATO
             if (_running) { throw new InvalidOperationException(); }
             _start = DateTime.Now.Ticks;
             _running = true;
-            _thread = new Thread(Worker);
+            _thread = new Thread(Work);
             _thread.Start();
         }
 
@@ -64,7 +62,6 @@ namespace WATO
                 worker.Start();
                 workers.Add(worker);
             }
-            // TODO welche params brauchen die worker?
 
             return workers;
         }
@@ -79,9 +76,9 @@ namespace WATO
                 {
                     _bildcounter++;
 
-                    if (_bildcounter % 10 == 0)
+                    if (_bildcounter % BitmapCreator.PicturesTillSave == 0)
                     {
-                        _tracer.TraceMessage("At [" + DateTime.Now.ToString("hh:mm:ss.fff")+ "] Timespan for 10 Rounds: " + TimeSpan.FromTicks(DateTime.Now.Ticks - _start).ToString() + " with " + _workerCount + " workers with " + _dataGrid.Count + " rows and " + _dataGrid.ElementAt(0).Count() + " columns");
+                        _tracer.TraceMessage("At [" + DateTime.Now.ToString("hh:mm:ss.fff")+ "] Timespan for " + BitmapCreator.PicturesTillSave + " Rounds: " + TimeSpan.FromTicks(DateTime.Now.Ticks - _start).ToString() + " with " + _workerCount + " workers with " + _dataGrid.Count + " rows and " + _dataGrid.ElementAt(0).Count() + " columns");
                         //Console.WriteLine(TimeSpan.FromTicks(DateTime.Now.Ticks - _start).ToString()); // Console option
                         _start = DateTime.Now.Ticks;
                     }
@@ -106,7 +103,7 @@ namespace WATO
             }
         }
 
-        public void Worker()
+        public void Work()
         {
             while (_running)
             {
@@ -127,13 +124,13 @@ namespace WATO
 
         private List<Payload> SplitDataGrid()
         {
-            if ((_pixelCount / _workerCount) % 1 != 0) { throw new Exception(); }
-            int length = _pixelCount / _workerCount;
+            if (( _dataGrid.Count / _workerCount) % 1 != 0) { throw new Exception(); }
+            int length =  _dataGrid.Count / _workerCount;
             List<Payload> payLoad = new List<Payload>();
 
             for (int counter = 0; counter < _workerCount; counter++) 
             {
-                bool[,] dataChunk = new bool[length + 2, _pixelCount + 2];
+                bool[,] dataChunk = new bool[length + 2, _dataGrid.Count + 2];
 
                 AddToArray(dataChunk, GetRow(counter * length - 1), 0); // Getting upper Ghost Boundary 
 
