@@ -11,9 +11,13 @@ namespace WATO
     internal static class ImageSaver
     {
 
-        public static void Saveimages(List<Bitmap> bitmaps)
+        public static void Saveimages(List<Bitmap> bitmaps, int maximalThreadsCount)
         {
-            Parallel.For(0, bitmaps.Count, i =>
+            var pOptions = new ParallelOptions();
+            // Gets or sets the maximum number of concurrent tasks enabled by this ParallelOptions instance.
+            pOptions.MaxDegreeOfParallelism = maximalThreadsCount; // maximal Threads
+
+            Parallel.For(0, bitmaps.Count, pOptions, i =>
              {
                  var curr = bitmaps.ElementAt(i);
 

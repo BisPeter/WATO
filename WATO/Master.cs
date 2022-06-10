@@ -83,7 +83,7 @@ namespace WATO
                         _start = DateTime.Now.Ticks;
                     }
 
-                    BitmapCreator.AddImageToList(_dataGrid);
+                    BitmapCreator.AddImageToList(_dataGrid, _workerCount);
                     
                     _finishedWorkersCount = 0;
                     _allWorkersFinished = true;

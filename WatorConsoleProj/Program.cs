@@ -39,7 +39,7 @@ namespace WatorConsoleProj
                         b.ElementAt(i).Add(false);
                 }
             }
-            Master m = new Master(32, b);
+            Master m = new Master(16, b);
             m.Start();
         }
     }

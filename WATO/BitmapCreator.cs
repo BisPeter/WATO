@@ -42,7 +42,7 @@ namespace WATO
             _bitmaps.Add(bi);                    
         }
 
-        internal static void AddImageToList(List<List<bool>> dataGrid)
+        internal static void AddImageToList(List<List<bool>> dataGrid, int maximalThreadsCount)
         {
             var deepCopyDataGrid = new List<List<bool>>(dataGrid.Select(d =>new List<bool>(d.Select(dd => dd))));
 
@@ -50,8 +50,11 @@ namespace WATO
 
             if(_bools.Count % PicturesTillSave == 0)
             {
+                var pOptions = new ParallelOptions();
+                // Gets or sets the maximum number of concurrent tasks enabled by this ParallelOptions instance.
+                pOptions.MaxDegreeOfParallelism = maximalThreadsCount; // maximal Threads
                 Parallel.ForEach(_bools, x=> CreateBimapfromListOfLists(x));
-                ImageSaver.Saveimages(_bitmaps); 
+                ImageSaver.Saveimages(_bitmaps, maximalThreadsCount); 
                 _bitmaps.Clear();
             }
         }
