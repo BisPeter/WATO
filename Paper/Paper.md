@@ -26,9 +26,9 @@ Keine Eingabe führt default mäßig zu einem Random aufgefülltem Initialbild.<
 Zum darstellen der Bilder wurde die Slideshow von IrfanView verwendet. Hierzu: 
  File=>Slideshow=>Rechts zum Ordner navigieren, die Bilder markieren "Add All"(optional: Links oben "Automatic after" z.B. 0.1 Sekunden + links unten "Full Screen Options"=> "Full screen / Slideshow" => option 3 + Häckchen weg bei "Use Resamble function for first display on an image")
 
-<img src="Irfan_Config_Slideshow.jpeg" alt="drawing" width="500"/></br>
+<img src="Irfan_Config_Slideshow.jpeg" alt="drawing" width="350"/>
 
-<img src="irfan_Configuration_fullscreen.jpeg" alt="drawing" width="350"/>
+<img src="irfan_Configuration_fullscreen.jpeg" alt="drawing" width="300"/>
 
 
 ## Konzepterstellung
@@ -37,18 +37,18 @@ In Frage gekommen sind für uns besonders für "Algorithm Structure Patterns":
 - Geometric decomposition
 - Divide and Conquer
 
-Nach weiteren Überlegungen war für dieses Beispiel "Geometric decomposition" die logischere wahl als "Divide and Conquer". 
+Nach weiteren Überlegungen war für dieses Beispiel "Geometric decomposition" die logischere Wahl als "Divide and Conquer". 
 In Divide and Conquer wäre es schwieriger und mit mehr Aufwand verbunden gewesen, die Teile zu zerteilen und wieder zusammen zu führen.  
 Die Berechnungen wären wahrscheinlich nicht aufwendig genug gewesen um das Erstellen der Tasks zu kompensieren.
 
 Für "Supporting Structure Patterns" wurden die Folgenden Patterns ausgewählt:
 - Master / Worker
 - Distributed array
-- Shared Queue (Wurde im Finalen version nicht mehr verwendet.)
+- Shared Queue (Wurde in der finalen Version nicht mehr verwendet.)
 
-Master / Worker Pattern unterstützt die Aufteilung von Felder auf kleinere chunks. Der Master teilt auf und die Worker arbeiten die aufgeteilte segmente ab und reichen es wieder zum master zurÜck.
+Master / Worker Pattern unterstützt die Aufteilung von Felder auf kleinere chunks. Der Master teilt auf und die Worker arbeiten die aufgeteilten Segmente ab und reichen es wieder zum Master zurück.
 
-Distributed Array unterstützt die aufteilung von einem ganzen array auf kleinere arrays, damit die worker ihren eigenen array haben und wir dadurch ein Fehler der durch beim gleichzigen zugriff auf ein Datenbestand passiert.
+Distributed Array unterstützt die Aufteilung von einem ganzen array auf kleinere arrays, damit die Worker ihr eigenes array haben und wir dadurch einen Fehler, der durch das gleichzeitige Zugreifen auf einen Datenbestand passieren würde, verhindern.
 
 
 ## Erster Versuch / erste Version
@@ -80,25 +80,25 @@ worker.FireOnWorkerIsDone += Worker_WorkerIsDone;
 - Nun geht der Master so lange schlafen, bis alle Worker mit dem derzeitigen Bild fertig sind und er wieder von vorne anfangen kann.
   
 Worker Thread:
-- Sobald der Worker eine Payload erhaltet, wird er von der Master auf "working" gesetzt und arbeitet sobald er am Zug ist.
+- Sobald der Worker eine Payload erhaltet, wird er von dem Master auf "working" gesetzt und arbeitet sobald er am Zug ist.
 - [CalculatePayload] Der Worker berechnet seine zugewiesene Payload inklusive Ghost Boundaries und leifert die berechnete Payload ohne Ghost Boundaries zurück. 
-- Nun feuert der Worker das event [FireOnWorkerIsDone] mit seiner payload. Hierbei wird [Worker_WorkerIsDone] in der Masterklasse, aber noch im WorkerThread ausgeführt. Dieser Teil wird gelockt.
+- Nun feuert der Worker das event [FireOnWorkerIsDone] mit seiner Payload. Hierbei wird [Worker_WorkerIsDone] in der Masterklasse, aber noch im WorkerThread ausgeführt. Dieser Teil wird gelockt.
 - [FillPublishedCreatedImage] Hierbei wird die berechnete Payload des Workers auf das List< List< bool>> Bild des Masters überschrieben.
 - Falls alle Worker fertig sind wird das Bild dem [BitmapCreator] übergeben und der Master startet wieder von vorne.
-- Falls [BitmapCreator.PicturesTillSave] X viele Bilder gespeichert wurden, wird die verbrauchte Zeit für die Berechnung in das trace.txt Logfile geschrieben und die Bilder in Bitmaps umgeformt und anschließend mithilfe des [ImageSaver]s mithile von Parallel.For, Parallel in Files geschrieben. (Die IO Aufgaben benötigen sehr viel Zeit, deswegen werden sie erst nach X vielen Bildern durchgeführt und bei der Zeitmessung nicht mitgerechnet. Mithilfe des Parallel.For wird versucht das Speichern der Bilder möglichst kurz zu halten) ([Parallel.For](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.parallel.for?view=net-6.0) mithilfe von [ParallelOptions](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions?view=net-6.0) .[MaxDegreeOfParallelism ](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions.maxdegreeofparallelism?view=net-6.0#system-threading-tasks-paralleloptions-maxdegreeofparallelism) lässt die maximale anzahl an Threads angeben. Diese wird in unserem Fall auf die anzahl der Worker gesetzt, also z.B. 1,2,4,8,16 )
+- Falls [BitmapCreator.PicturesTillSave] X viele Bilder gespeichert wurden, wird die verbrauchte Zeit für die Berechnung in das trace.txt Logfile geschrieben und die Bilder in Bitmaps umgeformt und anschließend mithilfe des [ImageSaver]s mithile von Parallel.For, Parallel in Files geschrieben. (Die IO Aufgaben benötigen sehr viel Zeit, deswegen werden sie erst nach X vielen Bildern durchgeführt und bei der Zeitmessung nicht mitgerechnet. Mithilfe des Parallel.For wird versucht das Speichern der Bilder möglichst kurz zu halten) ([Parallel.For](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.parallel.for?view=net-6.0) mithilfe von [ParallelOptions](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions?view=net-6.0) .[MaxDegreeOfParallelism ](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions.maxdegreeofparallelism?view=net-6.0#system-threading-tasks-paralleloptions-maxdegreeofparallelism) lässt die maximale anzahl an Threads angeben. Diese wird in unserem Fall auf die Anzahl der Worker gesetzt, also z.B. 1,2,4,8,16 )
 - Anschließend legt sich der Worker wieder schlafen, bis er eine neue Aufgabe zugewiesen bekommt
 
 
 
 ## Klassendiagram:
-<img src="ClassDiagram1.png" alt="drawing" width="800"/>
+<img src="ClassDiagram1.png" alt="drawing" width="600"/>
 
 ## Sequenzdiagram 
 (durch die Threads ist die Reihenfole von Worker nicht immer gleich, dies ist eine Beispiel-Abfolge) 
 
 ```plantuml
 @startuml
-scale 600*800
+scale 500*800
 Master -> Worker1 : Zeile 11,**0,1,2**,3
 Master -> Worker2 : Zeile 2,**3,4,5**,6
 Worker1 -> Master : Zeile **0,1,2**
@@ -133,9 +133,9 @@ At [11:48:22.230] Timespan for 10 Rounds: **00:00:36.5939607** with 8 workers wi
 At [11:49:18.737] Timespan for 10 Rounds: **00:00:34.8207008** with 16 workers with 10000x10000 pixels</br>
 At [11:51:51.448] Timespan for 10 Rounds: **00:00:35.2801955** with 32 workers with 10000x10000 pixels</br>
 
-An dieses Diagram wird veranschaulicht, wie schnell zwei unterschiedlich starke Prozessoren die Felder berechnet haben.</br>
+An diesem Diagram wird veranschaulicht, wie schnell zwei unterschiedlich starke Prozessoren die Felder berechnet haben.</br>
 <img src="CPU Chart.JPG" alt="drawing" width="800"/>
 
 ## Amdahl‘s law
 
-Amdahl‘s law besagt, dass T = Ts + Tp wobei s für die sequentielle Berechnungen und p für die Paralelle Berechnungen steht. In unseren Fall dauern die sequentielle Berechnungen durchschnittlich 1.5150827 Sekunden lang (für 10 Runden). Dieses Zahl wurde sowohl mit 1, als auch mit 32, Threads gemessen. 
+Amdahl‘s law besagt, dass T = Ts + Tp wobei s für die sequentielle Berechnungen und p für die Paralelle Berechnungen steht. In unseren Fall dauern die sequentiellen Berechnungen durchschnittlich 1.5150827 Sekunden (für 10 Runden). Dieses Zahl wurde sowohl mit 1, als auch mit 32, Threads gemessen. 
