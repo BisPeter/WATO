@@ -138,4 +138,11 @@ An diesem Diagram wird veranschaulicht, wie schnell zwei unterschiedlich starke 
 
 ## Amdahl‘s law
 
-Amdahl‘s law besagt, dass T = Ts + Tp wobei s für die sequentielle Berechnungen und p für die Paralelle Berechnungen steht. In unseren Fall dauern die sequentiellen Berechnungen durchschnittlich 1.5150827 Sekunden (für 10 Runden). Dieses Zahl wurde sowohl mit 1, als auch mit 32, Threads gemessen. 
+Amdahl‘s law besagt, dass T = Ts + Tp wobei s für die sequentielle Berechnungen und p für die Paralelle Berechnungen steht. In unseren Fall dauern die sequentielle Berechnungen durchschnittlich 15.1243786 Sekunden lang (für 10 Runden). Das Berechnen von paralellen teil nimt 21 Sekunden im anspruch.
+
+Sequentiel Work took: 00:00:15.1243786</br>
+Paralell Work took:   00:00:21.0367204</br>
+At [08:25:08.845] Timespan for 10 Rounds: 00:00:36.1610990 with 16 workers with 10000 rows and 10000 columns</br>
+Sequentiel Work took: 00:00:16.0552797</br>
+Paralell Work took:   00:00:21.7226151</br>
+At [08:31:22.559] Timespan for 10 Rounds: 00:00:37.7788987 with 16 workers with 10000 rows and 10000 columns</br>
