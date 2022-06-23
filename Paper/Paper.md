@@ -10,12 +10,27 @@ WATO\WatorConsoleProj\bin\Debug\PictureX.bmp
 
 Zum Ausführen, das Projekt WatorConsoleProj starten.
 
+Dies kann mit der Commandline mit CommandArgs ausgeführt werden.(oder direkt in Visual Studio)
+
+Arg1=Pixel Anzahl einer Dimension z.b. 1000 => 1000x1000 Pixel</br>
+Wenn nichts angegeben wird oder Falscheingabe(<2 Oder >100000) führt es zum default Wert 1000 x 1000 Pixel.</br></br>
+Arg2=Anzahl der Threads z.b. 8 => 8 Worker-Threads werden gestartet</br>
+Wenn nichts angegeben wird oder Falscheingabe(<1 Oder >1024) führt es zum default Wert wodurch 4 Worker-Threads gestartet werden.</br></br>
+Arg3=Bits für das Initialbild setzen z.b. 3:3.2:4.1:9 => bits an den Stellen (3,3) (2,4) und (1,9) werden gesetzt (nur genau dieses Format wird unterstützt)</br>
+Wenn nichts angegeben wird führt es default zu einer Random aufgefülltem Initialbild.</br></br>
+<img src="cmdBsp1.png" alt="drawing" width="600"/></br>
+=> führt zu 1000x1000 Pixel, 4 Worker-Threads und einem Random aufgefülltem Initialbild
+<img src="cmdBsp2.png" alt="drawing" width="600"/></br>
+=> führt zu 100x100 Pixel, 2 Worker-Threads und einem leeren Initialbild mit gesetzten Pixel auf den Stellen (3,3) (1,5) und (6,6)
+
+
+
 Zum darstellen der Bilder wurde die slideshow IrfanView verwendet. Hierzu: 
  File=>Slideshow=>Rechts zum Ordner navigieren, die Bilder markieren "Add All"(optional: Links oben "Automatic after" z.B. 0.1 Sekunden + links unten "Full Screen Options"=> "Full screen / Slideshow" => option 3 + Häckchen weg bei "Use Resamble function for first display on an image")
 
-<img src="Irfan_Config_Slideshow.jpeg" alt="drawing" width="600"/></br>
+<img src="Irfan_Config_Slideshow.jpeg" alt="drawing" width="500"/></br>
 
-<img src="irfan_Configuration_fullscreen.jpeg" alt="drawing" width="400"/>
+<img src="irfan_Configuration_fullscreen.jpeg" alt="drawing" width="350"/>
 
 
 ## Konzepterstellung
