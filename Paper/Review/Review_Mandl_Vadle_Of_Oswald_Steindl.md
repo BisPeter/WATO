@@ -24,6 +24,8 @@
 
 * ## - Eine Beispielausgabe wäre als Veranschaulichung und für das Verständnis ein guter Zusatz gewesen.
 
+</br>
+</br>
 
 * ## + Es ist sehr gut dass die verwendete Zeit für das Verteilen sowie das Sammeln der Daten veranschaulicht wurde. Dadurch sieht man wirklich wie viel Zeit für dies verwendet wurde.
 
