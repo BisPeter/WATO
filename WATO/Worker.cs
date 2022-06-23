@@ -1,21 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using WATO.Interfaces;
+﻿//----------------------------------------------------------------------
+// <copyright file=Worker.cs company="FHWN.ac.at">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <summary>This Project represents a WATOR simulation, implemented with a Master-Worker Pattern</summary>
+// <author>Matthias Mandl & Peter Vadle</author>
+// -----------------------------------------------------------------------
 
 namespace WATO
 {
+    using System;
+    using System.Threading;
+    using WATO.Interfaces;
+
+    /// <summary>
+    /// Represents a Worker of the Master - Worker pattern.
+    /// </summary>
     public class Worker : IThread
     {
+        /// <summary>
+        /// The current payload to calculate..
+        /// </summary>
         private Payload _payload;
+
+        /// <summary>
+        /// Occurs when [fire on worker is done].
+        /// </summary>
         public event EventHandler<Payload> FireOnWorkerIsDone;
+
+        /// <summary>
+        /// The thread.
+        /// </summary>
         private Thread _thread;
+
+        /// <summary>
+        /// If the thread is running.
+        /// </summary>
         private bool _running;
+
+        /// <summary>
+        /// If the worker is working.
+        /// </summary>
         private bool _working;
 
+        /// <summary>
+        /// Starts the worker and thread.
+        /// </summary>
         public void Start()
         {
             if (_running) { throw new InvalidOperationException(); }
@@ -24,6 +53,9 @@ namespace WATO
             _thread.Start();
         }
 
+        /// <summary>
+        /// Stops the worker and thread.
+        /// </summary>
         public void Stop()
         {
             if (!_running) { throw new InvalidOperationException(); }
@@ -35,6 +67,10 @@ namespace WATO
             }
         }
 
+        /// <summary>
+        /// Accepts the payload, which was given from the master.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
         public void AcceptPayload(Payload payload)
         {
             if (_working) { throw new ArgumentException("[AcceptPayload]: cannot get payload when still working"); }
@@ -42,6 +78,9 @@ namespace WATO
             _working = true;
         }
 
+        /// <summary>
+        /// Worker of this thread.
+        /// </summary>
         public void Work()
         {
             while (_running)
@@ -55,6 +94,12 @@ namespace WATO
             }
         }
 
+        /// <summary>
+        /// Calculates the given payload from the master and returns
+        /// the calculated payload.
+        /// </summary>
+        /// <param name="payload">The payload from the master.</param>
+        /// <returns>the calculated payload.</returns>
         private Payload CalculatePayload(Payload payload)
         {
             Payload payload2 = new Payload { RowNumber = payload.RowNumber };
@@ -77,7 +122,7 @@ namespace WATO
                     {
                         if (neighbourCount < 2) { calculatedDataChunk[i - 1, j - 1] = false; }
                         else if (neighbourCount == 3 || neighbourCount == 2) { calculatedDataChunk[i - 1, j - 1] = true; }
-                        else if(neighbourCount > 3) { calculatedDataChunk[i - 1, j - 1] = false; }
+                        else if (neighbourCount > 3) { calculatedDataChunk[i - 1, j - 1] = false; }
                     }
                     else
                     {

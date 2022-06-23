@@ -1,28 +1,85 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using WATO.Interfaces;
+﻿//----------------------------------------------------------------------
+// <copyright file=Master.cs company="FHWN.ac.at">
+// Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <summary>This Project represents a WATOR simulation, implemented with a Master-Worker Pattern</summary>
+// <author>Matthias Mandl & Peter Vadle</author>
+// -----------------------------------------------------------------------
 
 namespace WATO
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using WATO.Interfaces;
+
+    /// <summary>
+    /// Represents the master of the Master - Worker pattern.
+    /// </summary>
     public class Master : IThread
     {
+        /// <summary>
+        /// The workers.
+        /// </summary>
         private List<Worker> _workers;
-        private List<List<bool>> _dataGrid; // List of rows
-        private int _workerCount;
+
+        /// <summary>
+        /// The data grid, where to save the results of the worker
+        /// When all worker are finished, this is the current picture.
+        /// </summary>
+        private List<List<bool>> _dataGrid;// List of rows
+
+        /// <summary>
+        /// The worker count.
+        /// </summary>
+        private readonly int _workerCount;
+
+        /// <summary>
+        /// The finished workers count.
+        /// </summary>
         private int _finishedWorkersCount;
+
+        /// <summary>
+        /// If the thread isrunning.
+        /// </summary>
         private bool _running;
+
+        /// <summary>
+        /// The thread.
+        /// </summary>
         private Thread _thread;
+
+        /// <summary>
+        /// If all workers are finished.
+        /// </summary>
         private bool _allWorkersFinished = true;
-        private int _bildcounter = 0;
-        private object _locker;
+
+        /// <summary>
+        /// The counter of calculated pictures.
+        /// </summary>
+        private int _pictureCounter = 0;
+
+        /// <summary>
+        /// The locker.
+        /// </summary>
+        private readonly object _locker;
+
+        /// <summary>
+        /// The start ticks.
+        /// </summary>
         private long _start;
+
+        /// <summary>
+        /// The tracer.
+        /// </summary>
         private readonly Tracer _tracer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Master"/> class.
+        /// </summary>
+        /// <param name="workerCount">The worker count.</param>
+        /// <param name="dataGrid">The initial data grid.</param>
         public Master(int workerCount, List<List<bool>> dataGrid)
         {
             _locker = new object();
@@ -32,7 +89,9 @@ namespace WATO
             _tracer = new Tracer();
         }
 
-
+        /// <summary>
+        /// Starts the worker and thread.
+        /// </summary>
         public void Start()
         {
             if (_running) { throw new InvalidOperationException(); }
@@ -42,6 +101,9 @@ namespace WATO
             _thread.Start();
         }
 
+        /// <summary>
+        /// Stops the worker and thread.
+        /// </summary>
         public void Stop()
         {
             if (!_running) { throw new InvalidOperationException(); }
@@ -52,6 +114,11 @@ namespace WATO
             }
         }
 
+        /// <summary>
+        /// Creates the workers.
+        /// </summary>
+        /// <param name="workerCount">The worker count.</param>
+        /// <returns>The list of worker.</returns>
         private List<Worker> CreateWorkers(int workerCount)
         {
             List<Worker> workers = new List<Worker>();
@@ -66,6 +133,12 @@ namespace WATO
             return workers;
         }
 
+        /// <summary>
+        /// Worker is done.
+        /// If all are done, save the bitmap.
+        /// </summary>
+        /// <param name="sender">The worker.</param>
+        /// <param name="e">The payload of the worker.</param>
         private void Worker_WorkerIsDone(object sender, Payload e)
         {
             lock (_locker)
@@ -74,23 +147,28 @@ namespace WATO
                 _finishedWorkersCount++;
                 if (_finishedWorkersCount == _workerCount)
                 {
-                    _bildcounter++;
+                    _pictureCounter++;
 
-                    if (_bildcounter % BitmapCreator.PicturesTillSave == 0)
+                    if (_pictureCounter % BitmapCreator.PicturesTillSave == 0)
                     {
-                        _tracer.TraceMessage("At [" + DateTime.Now.ToString("hh:mm:ss.fff")+ "] Timespan for " + BitmapCreator.PicturesTillSave + " Rounds: " + TimeSpan.FromTicks(DateTime.Now.Ticks - _start).ToString() + " with " + _workerCount + " workers with " + _dataGrid.Count + " rows and " + _dataGrid.ElementAt(0).Count() + " columns");
+                        _tracer.TraceMessage("At [" + DateTime.Now.ToString("hh:mm:ss.fff") + "] Timespan for " + BitmapCreator.PicturesTillSave + " Rounds: " + TimeSpan.FromTicks(DateTime.Now.Ticks - _start).ToString() + " with " + _workerCount + " workers with " + _dataGrid.Count + " rows and " + _dataGrid.ElementAt(0).Count() + " columns");
                         //Console.WriteLine(TimeSpan.FromTicks(DateTime.Now.Ticks - _start).ToString()); // Console option
                         _start = DateTime.Now.Ticks;
                     }
 
                     BitmapCreator.AddImageToList(_dataGrid, _workerCount);
-                    
+
                     _finishedWorkersCount = 0;
                     _allWorkersFinished = true;
                 }
             }
         }
 
+        /// <summary>
+        /// Fills the _dataGrid with the incomming values from the worker.
+        /// </summary>
+        /// <param name="dataChunk">The data chunk.</param>
+        /// <param name="rowNumber">The row number where to insert.</param>
         private void FillPublishedCreatedImage(bool[,] dataChunk, int rowNumber)
         {
             for (int i = 0; i < dataChunk.GetLength(0); i++)
@@ -98,11 +176,14 @@ namespace WATO
                 for (int j = 0; j < dataChunk.GetLength(1); j++)
                 {
                     // replace our datagrid at position with datachunk value from worker
-                    _dataGrid[rowNumber+i][j] = dataChunk[i, j];
+                    _dataGrid[rowNumber + i][j] = dataChunk[i, j];
                 }
             }
         }
 
+        /// <summary>
+        /// Worker of this thread.
+        /// </summary>
         public void Work()
         {
             while (_running)
@@ -114,6 +195,10 @@ namespace WATO
             }
         }
 
+        /// <summary>
+        /// Distributes the payloads to the workers.
+        /// </summary>
+        /// <param name="tasks">The payloads.</param>
         private void DistributeWork(List<Payload> tasks)
         {
             for (int i = 0; i < tasks.Count; i++)
@@ -122,13 +207,17 @@ namespace WATO
             }
         }
 
+        /// <summary>
+        /// Splits the data grid.
+        /// </summary>
+        /// <returns>The payloads.</returns>
         private List<Payload> SplitDataGrid()
         {
-            if (( _dataGrid.Count / _workerCount) % 1 != 0) { throw new Exception(); }
-            int length =  _dataGrid.Count / _workerCount;
+            if ((_dataGrid.Count / _workerCount) % 1 != 0) { throw new Exception(); }
+            int length = _dataGrid.Count / _workerCount;
             List<Payload> payLoad = new List<Payload>();
 
-            for (int counter = 0; counter < _workerCount; counter++) 
+            for (int counter = 0; counter < _workerCount; counter++)
             {
                 bool[,] dataChunk = new bool[length + 2, _dataGrid.Count + 2];
 
@@ -147,6 +236,12 @@ namespace WATO
             return payLoad;
         }
 
+        /// <summary>
+        /// Adds a row to the 2d array.
+        /// </summary>
+        /// <param name="dataArray">The 2d data array.</param>
+        /// <param name="row">The row.</param>
+        /// <param name="rowNumber">The row number.</param>
         private void AddToArray(bool[,] dataArray, bool[] row, int rowNumber)
         {
             for (int i = 0; i < row.Length; i++)
@@ -155,6 +250,11 @@ namespace WATO
             }
         }
 
+        /// <summary>
+        /// Gets the row.
+        /// </summary>
+        /// <param name="row">The index of the row.</param>
+        /// <returns>The row of the data grid.</returns>
         private bool[] GetRow(int row)
         {
             List<bool> ret = new List<bool>();

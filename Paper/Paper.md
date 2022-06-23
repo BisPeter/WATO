@@ -69,7 +69,7 @@ Worker Thread:
 - Nun feuert der Worker das event [FireOnWorkerIsDone] mit seiner payload. Hierbei wird [Worker_WorkerIsDone] in der Masterklasse, aber noch im WorkerThread ausgeführt. Dieser Teil wird gelockt.
 - [FillPublishedCreatedImage] Hierbei wird die berechnete Payload des Workers auf das List< List< bool>> Bild des Masters überschrieben.
 - Falls alle Worker fertig sind wird das Bild dem [BitmapCreator] übergeben und der Master startet wieder von vorne.
-- Falls [BitmapCreator.PicturesTillSave] X viele Bilder gespeichert wurden, wird die verbrauchte Zeit für die Berechnung in das trace.txt Logfile geschrieben und die Bilder zuerst mit Parallel.ForEach in Bitmaps umgeformt und anschließend mithilfe des [ImageSaver]s mithile von Parallel.For, Parallel in Files geschrieben. (Die IO Aufgaben benötigen sehr viel Zeit. deswegen werden sie erst nach X vielen Bildern durchgeführt und bei der Zeitmessung nicht mitgerechnet. Mithilfe des Parallel.For wird versucht das Speichern der Bilder möglichst kurz zu halten) ([Parallel.For](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.parallel.for?view=net-6.0) mithilfe von [ParallelOptions](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions?view=net-6.0) .[MaxDegreeOfParallelism ](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions.maxdegreeofparallelism?view=net-6.0#system-threading-tasks-paralleloptions-maxdegreeofparallelism) lässt die maximale anzahl an Threads angeben. Diese wird in unserem Fall auf die anzahl der Worker gesetzt, also z.B. 1,2,4,8,16 )
+- Falls [BitmapCreator.PicturesTillSave] X viele Bilder gespeichert wurden, wird die verbrauchte Zeit für die Berechnung in das trace.txt Logfile geschrieben und die Bilder in Bitmaps umgeformt und anschließend mithilfe des [ImageSaver]s mithile von Parallel.For, Parallel in Files geschrieben. (Die IO Aufgaben benötigen sehr viel Zeit. deswegen werden sie erst nach X vielen Bildern durchgeführt und bei der Zeitmessung nicht mitgerechnet. Mithilfe des Parallel.For wird versucht das Speichern der Bilder möglichst kurz zu halten) ([Parallel.For](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.parallel.for?view=net-6.0) mithilfe von [ParallelOptions](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions?view=net-6.0) .[MaxDegreeOfParallelism ](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions.maxdegreeofparallelism?view=net-6.0#system-threading-tasks-paralleloptions-maxdegreeofparallelism) lässt die maximale anzahl an Threads angeben. Diese wird in unserem Fall auf die anzahl der Worker gesetzt, also z.B. 1,2,4,8,16 )
 - Anschließend legt sich der Worker wieder schlafen, bis er eine neue Aufgabe zugewiesen bekommt
 
 
@@ -98,9 +98,21 @@ Hier wird Beispielsweise die Payload von Worker2 dargestellt. Er bekommt die Zei
 
 ## Performance Analyse:
 ### Matthias PC 10000x10000 Pixel, X Threads, Messung für Berechnung von 10 Bilder:
+Intel i5-4570 3.2GHz, 4 Cores, 4 Logical Processors
+
 At [06:16:54.856] Timespan for 10 Rounds: **00:02:25.5450722** with 1 workers with 10000x10000 pixels</br>
 At [06:19:05.437] Timespan for 10 Rounds: **00:01:37.8710541** with 2 workers with 10000x10000 pixels</br>
 At [06:20:46.626] Timespan for 10 Rounds: **00:01:07.2211853** with 4 workers with 10000x10000 pixels</br>
 At [06:22:30.209] Timespan for 10 Rounds: **00:01:05.4831889** with 8 workers with 10000x10000 pixels</br>
 At [06:24:21.811] Timespan for 10 Rounds: **00:01:06.4279996** with 16 workers with 10000x10000 pixels</br>
 At [06:25:49.512] Timespan for 10 Rounds: **00:01:05.5579848** with 32 workers with 10000x10000 pixels</br>
+
+### Peter PC 10000x10000 Pixel, X Threads, Messung für Berechnung von 10 Bilder:
+AMD Ryzen 7 5700g 3800Mhz 8 Core(s), 16 Logical Prozessor(s)
+
+At [11:55:52.246] Timespan for 10 Rounds: *00:01:38.9093070* with 1 workers with 10000x10000 pixels</br>
+At [11:46:11.340] Timespan for 10 Rounds: *00:01:02.3619945* with 2 workers with 10000x10000 pixels</br>
+At [11:47:21.110] Timespan for 10 Rounds: *00:00:44.3621281* with 4 workers with 10000x10000 pixels</br>
+At [11:48:22.230] Timespan for 10 Rounds: *00:00:36.5939607* with 8 workers with 10000x10000 pixels</br>
+At [11:49:18.737] Timespan for 10 Rounds: *00:00:34.8207008* with 16 workers with 10000x10000 pixels</br>
+At [11:51:51.448] Timespan for 10 Rounds: *00:00:35.2801955* with 32 workers with 10000x10000 pixels</br>

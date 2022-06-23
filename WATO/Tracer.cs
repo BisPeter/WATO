@@ -7,13 +7,8 @@
 // -----------------------------------------------------------------------
 
 namespace WATO
-{ 
-    using System;
-    using System.Collections;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
+{
     using System.IO;
-    using System.Text;
 
     /// <summary>
     /// Defines the <see cref="Tracer" />.
@@ -21,7 +16,7 @@ namespace WATO
     public class Tracer
     {
         /// <summary>
-        /// Defines the path.
+        /// Defines the _path.
         /// </summary>
         private readonly string _path;
 
