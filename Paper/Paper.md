@@ -110,9 +110,16 @@ At [06:25:49.512] Timespan for 10 Rounds: **00:01:05.5579848** with 32 workers w
 ### Peter PC 10000x10000 Pixel, X Threads, Messung für Berechnung von 10 Bilder:
 AMD Ryzen 7 5700g 3800Mhz 8 Core(s), 16 Logical Prozessor(s)
 
-At [11:55:52.246] Timespan for 10 Rounds: *00:01:38.9093070* with 1 workers with 10000x10000 pixels</br>
-At [11:46:11.340] Timespan for 10 Rounds: *00:01:02.3619945* with 2 workers with 10000x10000 pixels</br>
-At [11:47:21.110] Timespan for 10 Rounds: *00:00:44.3621281* with 4 workers with 10000x10000 pixels</br>
-At [11:48:22.230] Timespan for 10 Rounds: *00:00:36.5939607* with 8 workers with 10000x10000 pixels</br>
-At [11:49:18.737] Timespan for 10 Rounds: *00:00:34.8207008* with 16 workers with 10000x10000 pixels</br>
-At [11:51:51.448] Timespan for 10 Rounds: *00:00:35.2801955* with 32 workers with 10000x10000 pixels</br>
+At [11:55:52.246] Timespan for 10 Rounds: **00:01:38.9093070** with 1 workers with 10000x10000 pixels</br>
+At [11:46:11.340] Timespan for 10 Rounds: **00:01:02.3619945** with 2 workers with 10000x10000 pixels</br>
+At [11:47:21.110] Timespan for 10 Rounds: **00:00:44.3621281** with 4 workers with 10000x10000 pixels</br>
+At [11:48:22.230] Timespan for 10 Rounds: **00:00:36.5939607** with 8 workers with 10000x10000 pixels</br>
+At [11:49:18.737] Timespan for 10 Rounds: **00:00:34.8207008** with 16 workers with 10000x10000 pixels</br>
+At [11:51:51.448] Timespan for 10 Rounds: **00:00:35.2801955** with 32 workers with 10000x10000 pixels</br>
+
+An dieses Diagram wird es veranschaulicht wie schnell zwei unterschiedlich starke Prozessoren die Felder berechnet haben.</br>
+<img src="CPU Chart.JPG" alt="drawing" width="800"/>
+
+## Amdahl‘s law
+
+Amdahl‘s law besagt, dass T = Ts + Tp wo s für die sequentielle berechnungen und p für die Paralelle berechnungen steht. In unseren fall dauern die Sequentielle berechnungen durchscnittlich 1.5150827 sekunden lang (für 10 durchläufe). Dieses Zahl wurde mit 1 und auch 32 Threads gemessen. 
