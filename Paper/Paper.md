@@ -26,7 +26,7 @@ Wenn nichts angegeben wird führt es default zu einer Random aufgefülltem Initi
 
 
 Zum darstellen der Bilder wurde die slideshow IrfanView verwendet. Hierzu: 
- File=>Slideshow=>Rechts zum Ordner navigieren, die Bilder markieren "Add All"(optional: Links oben "Automatic after" z.B. 0.1 Sekunden + links unten "Full Screen Options"=> "Full screen / Slideshow" => option 3 + Häckchen weg bei "Use Resamble function for first display on an image")
+ File=>Slideshow=>Rechts zum Ordner navigieren, die Bilder markieren "Add All" (optional: Links oben "Automatic after" z.B. 0.1 Sekunden + links unten "Full Screen Options"=> "Full screen / Slideshow" => option 3 + Häckchen weg bei "Use Resamble function for first display on an image")
 
 <img src="Irfan_Config_Slideshow.jpeg" alt="drawing" width="500"/></br>
 
@@ -35,19 +35,22 @@ Zum darstellen der Bilder wurde die slideshow IrfanView verwendet. Hierzu:
 
 ## Konzepterstellung
 Zu aller erst, haben wir das Problem analysiert und durchgeschaut, welche der "Algorithm Structure Patterns" und "Supporting Structure Patterns" wir für dieses Problem verwenden könnten.
-In Frage gekommen sind für uns in erster Linie für "Algorithm Structure Patterns": 
+In Frage gekommen sind für uns besonders für "Algorithm Structure Patterns": 
 - Geometric decomposition
 - Divide and Conquer
 
-"Geometric decomposition" hat nach weiteren Überlegungen mehr Sinn als "Divide and Conquer" für dieses Beispiel gemacht. 
+Nach weiteren Überlegungen war für dieses Beispiel "Geometric decomposition" die logischere wahl als "Divide and Conquer". 
 In Divide and Conquer wäre es schwieriger und mit mehr Aufwand verbunden gewesen, die Teile zu zerteilen und wieder zusammen zu führen.  
 Die Berechnungen wären wahrscheinlich nicht aufwendig genug gewesen um das Erstellen der Tasks zu kompensieren.
 
-Und für "Supporting Structure Patterns":
+Für "Supporting Structure Patterns" wurden die Folgenden Patterns ausgewählt:
 - Master / Worker
 - Distributed array
-- Shared Queue
+- Shared Queue (Wurde im Finalen version nicht mehr verwendet.)
 
+Master / Worker Pattern unterstützt die Aufteilung von Felder auf kleinere chunks. Der Master teilt auf und die Worker arbeiten die aufgeteilte segmente ab und reichen es wieder zum master zurÜck.
+
+Distributed Array unterstützt die aufteilung von einem ganzen array auf kleinere arrays, damit die worker ihren eigenen array haben und wir dadurch ein Fehler der durch beim gleichzigen zugriff auf ein Datenbestand passiert.
 
 
 ## Erster Versuch / erste Version
@@ -58,14 +61,14 @@ Unsere erste Überlegung war es, ein großes 2D Array zu haben und Geometric dec
 Nachteile:
 - Die Queues sind ein Bottleneck, da alle auf die gleiche Queue zugreifen
 - Der Master hat sehr viel Arbeit die Teile zusammenzuführen, aufzuteilen und in die Queue zu stecken.
-- Das 2D Array in Vierecke aufzteilen bringt Komplexität oder Einschränkungen mit sich. Etwa man schränkt die Möglichkeiten so ein, dass die Anzahl der Threads n^4 sein muss, sprich 4-16-64-256 und das 2D Array auch in so viele gleichgroße Vierecke Teilbar ist. Oder man muss viele Fälle berücksichtigen, wie 3x3, ungleiche Vierecke, z.b. 10x10 mit 2 Threads. Diese Fälle würden eine vermeidbare Komplexität in den Code bringen. 
+- Das 2D Array in Vierecke aufzteilen bringt Komplexität beziehungsweise Einschränkungen mit sich. Etwa man schränkt die Möglichkeiten so ein, dass die Anzahl der Threads n^4 sein muss, sprich 4-16-64-256 und das 2D Array auch in so viele gleichgroße Vierecke Teilbar ist. Oder man muss viele Fälle berücksichtigen, wie 3x3, ungleiche Vierecke, z.b. 10x10 mit 2 Threads. Diese Fälle würden eine vermeidbare Komplexität in den Code bringen. 
 
 
 ## Zweite / finale Version
 Nachdem die erste Version viele Nachteile mit sich bringt, wurde versucht das Konzept zu überarbeiten und die Probleme der ersten Version zu minimieren.
 - Anstatt Vierecke zu verwenden wird das 2D Array in Zeilen-Teile zerteilt. Hiermit ist das Zerteilen einfacher und die Anzahl an Threads flexibler. (Einschränkung Pixel Modulo Threads == 0)
 - Jedes Zeilen-Teil hat hierbei seine Zeilen und die Ghost Boundaries.
-- Anstatt Queues zu verwenden übergibt der MasterThread die Payloads direkt an den jeweiligen Worker. Der WorkerThread ruft dann selbst das event auf, bei dem seine Daten in das "Master-2D-Array" geschrieben werden und der Master hat hiermit keinen Aufwand. 
+- Anstatt Queues zu verwenden übergibt der MasterThread die Payloads direkt an den jeweiligen Worker. Der WorkerThread wenn er fertig mit der Berechnung ist, ruft dann selbst das event auf, bei dem seine Daten in das "Master-2D-Array" geschrieben werden und der Master hat hiermit keinen Aufwand. 
 
 ### Ablauf
 Master Thread:
@@ -76,15 +79,15 @@ worker.FireOnWorkerIsDone += Worker_WorkerIsDone;
 ```
 - [SplitDataGrid] Der Master zerteilt das Bild in Payloads, welche ein 2D Array und eine Rownumber beinhalten. Das 2D Array beinhaltet die zugewiesenen Zeilen inklusive der GhostBoundaries. 
 - [DistributeWork] Der Master verteilt die Arbeit an die Worker und gibt jedem eine Payload (die Reihenfolge ist hierbei egal, da die Payload die "Rownumber" hat) 
-- Nun geht der Master so lange schlafen, bis alle Worker mit dem derzeitigen Bild fertig sind und er wieder von vorne anfangen kann
+- Nun geht der Master so lange schlafen, bis alle Worker mit dem derzeitigen Bild fertig sind und er wieder von vorne anfangen kann.
   
 Worker Thread:
-- Sobald der Worker eine Payload erhaltet, wird er auf "working" gesetzt und arbeitet soald er am Zug ist
+- Sobald der Worker eine Payload erhaltet, wird er von der Master auf "working" gesetzt und arbeitet sobald er am Zug ist.
 - [CalculatePayload] Der Worker berechnet seine zugewiesene Payload inklusive Ghost Boundaries und leifert die berechnete Payload ohne Ghost Boundaries zurück. 
 - Nun feuert der Worker das event [FireOnWorkerIsDone] mit seiner payload. Hierbei wird [Worker_WorkerIsDone] in der Masterklasse, aber noch im WorkerThread ausgeführt. Dieser Teil wird gelockt.
 - [FillPublishedCreatedImage] Hierbei wird die berechnete Payload des Workers auf das List< List< bool>> Bild des Masters überschrieben.
 - Falls alle Worker fertig sind wird das Bild dem [BitmapCreator] übergeben und der Master startet wieder von vorne.
-- Falls [BitmapCreator.PicturesTillSave] X viele Bilder gespeichert wurden, wird die verbrauchte Zeit für die Berechnung in das trace.txt Logfile geschrieben und die Bilder in Bitmaps umgeformt und anschließend mithilfe des [ImageSaver]s mithile von Parallel.For, Parallel in Files geschrieben. (Die IO Aufgaben benötigen sehr viel Zeit. deswegen werden sie erst nach X vielen Bildern durchgeführt und bei der Zeitmessung nicht mitgerechnet. Mithilfe des Parallel.For wird versucht das Speichern der Bilder möglichst kurz zu halten) ([Parallel.For](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.parallel.for?view=net-6.0) mithilfe von [ParallelOptions](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions?view=net-6.0) .[MaxDegreeOfParallelism ](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions.maxdegreeofparallelism?view=net-6.0#system-threading-tasks-paralleloptions-maxdegreeofparallelism) lässt die maximale anzahl an Threads angeben. Diese wird in unserem Fall auf die anzahl der Worker gesetzt, also z.B. 1,2,4,8,16 )
+- Falls [BitmapCreator.PicturesTillSave] X viele Bilder gespeichert wurden, wird die verbrauchte Zeit für die Berechnung in das trace.txt Logfile geschrieben und die Bilder in Bitmaps umgeformt und anschließend mithilfe des [ImageSaver]s mithile von Parallel.For, Parallel in Files geschrieben. (Die IO Aufgaben benötigen sehr viel Zeit, deswegen werden sie erst nach X vielen Bildern durchgeführt und bei der Zeitmessung nicht mitgerechnet. Mithilfe des Parallel.For wird versucht das Speichern der Bilder möglichst kurz zu halten) ([Parallel.For](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.parallel.for?view=net-6.0) mithilfe von [ParallelOptions](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions?view=net-6.0) .[MaxDegreeOfParallelism ](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions.maxdegreeofparallelism?view=net-6.0#system-threading-tasks-paralleloptions-maxdegreeofparallelism) lässt die maximale anzahl an Threads angeben. Diese wird in unserem Fall auf die anzahl der Worker gesetzt, also z.B. 1,2,4,8,16 )
 - Anschließend legt sich der Worker wieder schlafen, bis er eine neue Aufgabe zugewiesen bekommt
 
 
