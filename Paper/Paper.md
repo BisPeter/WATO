@@ -8,24 +8,22 @@ WATO\WatorConsoleProj\bin\Debug\trace.txt</br>
 Die Bilder befinden sich unter:</br>
 WATO\WatorConsoleProj\bin\Debug\PictureX.bmp
 
-Zum Ausführen, das Projekt WatorConsoleProj starten.
-
-Dies kann mit der Commandline mit CommandArgs ausgeführt werden.(oder direkt in Visual Studio)
+Zum Ausführen, die Datei WatorConsoleProj.exe mit der Commandline mit CommandArgs starten.(oder direkt in Visual Studio das Projekt starten)
 
 Arg1=Pixel Anzahl einer Dimension z.b. 1000 => 1000x1000 Pixel</br>
-Wenn nichts angegeben wird oder Falscheingabe(<2 Oder >100000) führt es zum default Wert 1000 x 1000 Pixel.</br></br>
+Keine, oder eine Falsche Eingabe(<2 Oder >100000) führt zum default Wert 1000 x 1000 Pixel.</br></br>
 Arg2=Anzahl der Threads z.b. 8 => 8 Worker-Threads werden gestartet</br>
-Wenn nichts angegeben wird oder Falscheingabe(<1 Oder >1024) führt es zum default Wert wodurch 4 Worker-Threads gestartet werden.</br></br>
+Keine, oder eine Falsche Eingabe(<1 Oder >1024) führt zum default Wert, wodurch 4 Worker-Threads gestartet werden.</br></br>
 Arg3=Bits für das Initialbild setzen z.b. 3:3.2:4.1:9 => bits an den Stellen (3,3) (2,4) und (1,9) werden gesetzt (nur genau dieses Format wird unterstützt)</br>
-Wenn nichts angegeben wird führt es default zu einer Random aufgefülltem Initialbild.</br></br>
+Keine Eingabe führt default mäßig zu einem Random aufgefülltem Initialbild.</br></br>
 <img src="cmdBsp1.png" alt="drawing" width="600"/></br>
-=> führt zu 1000x1000 Pixel, 4 Worker-Threads und einem Random aufgefülltem Initialbild
+=> führt zu 1000x1000 Pixel, 4 Worker-Threads und einem Random aufgefülltem Initialbild</br></br>
 <img src="cmdBsp2.png" alt="drawing" width="600"/></br>
 => führt zu 100x100 Pixel, 2 Worker-Threads und einem leeren Initialbild mit gesetzten Pixel auf den Stellen (3,3) (1,5) und (6,6)
 
 
 
-Zum darstellen der Bilder wurde die slideshow IrfanView verwendet. Hierzu: 
+Zum darstellen der Bilder wurde die Slideshow von IrfanView verwendet. Hierzu: 
  File=>Slideshow=>Rechts zum Ordner navigieren, die Bilder markieren "Add All"(optional: Links oben "Automatic after" z.B. 0.1 Sekunden + links unten "Full Screen Options"=> "Full screen / Slideshow" => option 3 + Häckchen weg bei "Use Resamble function for first display on an image")
 
 <img src="Irfan_Config_Slideshow.jpeg" alt="drawing" width="500"/></br>
@@ -79,8 +77,8 @@ worker.FireOnWorkerIsDone += Worker_WorkerIsDone;
 - Nun geht der Master so lange schlafen, bis alle Worker mit dem derzeitigen Bild fertig sind und er wieder von vorne anfangen kann
   
 Worker Thread:
-- Sobald der Worker eine Payload erhaltet, wird er auf "working" gesetzt und arbeitet soald er am Zug ist
-- [CalculatePayload] Der Worker berechnet seine zugewiesene Payload inklusive Ghost Boundaries und leifert die berechnete Payload ohne Ghost Boundaries zurück. 
+- Sobald der Worker eine Payload erhaltet, wird er auf "working" gesetzt und arbeitet sobald er am Zug ist
+- [CalculatePayload] Der Worker berechnet seine zugewiesene Payload inklusive Ghost Boundaries und liefert die berechnete Payload ohne Ghost Boundaries zurück. 
 - Nun feuert der Worker das event [FireOnWorkerIsDone] mit seiner payload. Hierbei wird [Worker_WorkerIsDone] in der Masterklasse, aber noch im WorkerThread ausgeführt. Dieser Teil wird gelockt.
 - [FillPublishedCreatedImage] Hierbei wird die berechnete Payload des Workers auf das List< List< bool>> Bild des Masters überschrieben.
 - Falls alle Worker fertig sind wird das Bild dem [BitmapCreator] übergeben und der Master startet wieder von vorne.
@@ -132,9 +130,9 @@ At [11:48:22.230] Timespan for 10 Rounds: **00:00:36.5939607** with 8 workers wi
 At [11:49:18.737] Timespan for 10 Rounds: **00:00:34.8207008** with 16 workers with 10000x10000 pixels</br>
 At [11:51:51.448] Timespan for 10 Rounds: **00:00:35.2801955** with 32 workers with 10000x10000 pixels</br>
 
-An dieses Diagram wird es veranschaulicht wie schnell zwei unterschiedlich starke Prozessoren die Felder berechnet haben.</br>
+An dieses Diagram wird veranschaulicht, wie schnell zwei unterschiedlich starke Prozessoren die Felder berechnet haben.</br>
 <img src="CPU Chart.JPG" alt="drawing" width="800"/>
 
 ## Amdahl‘s law
 
-Amdahl‘s law besagt, dass T = Ts + Tp wo s für die sequentielle berechnungen und p für die Paralelle berechnungen steht. In unseren fall dauern die Sequentielle berechnungen durchscnittlich 1.5150827 sekunden lang (für 10 durchläufe). Dieses Zahl wurde mit 1 und auch 32 Threads gemessen. 
+Amdahl‘s law besagt, dass T = Ts + Tp wobei s für die sequentielle Berechnungen und p für die Paralelle Berechnungen steht. In unseren Fall dauern die sequentielle Berechnungen durchschnittlich 1.5150827 Sekunden lang (für 10 Runden). Dieses Zahl wurde sowohl mit 1, als auch mit 32, Threads gemessen. 
